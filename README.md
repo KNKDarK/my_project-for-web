@@ -1,6 +1,8 @@
-# 🚀 Welcome to Z.ai Code Scaffold
+# 🚀Welcome to Sk.shafi masthan koushik 
 
-A modern, production-ready web application scaffold powered by cutting-edge technologies, designed to accelerate your development with [Z.ai](https://chat.z.ai)'s AI-powered coding assistance.
+I’m SK. Shafi Masthan Koushik, a CSE student and developer focused on building fast, scalable, and user-centered web applications.  
+I specialize in modern JavaScript/TypeScript ecosystems, especially React and Next.js, with a strong focus on clean architecture and performance optimization.  
+I’m passionate about turning ideas into reliable digital products that solve real-world problems.
 
 ## ✨ Technology Stack
 
