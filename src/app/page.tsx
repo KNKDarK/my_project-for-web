@@ -11,7 +11,6 @@ import {
   MapPin, 
   Github, 
   Linkedin, 
-  Twitter,
   ExternalLink,
   ChevronDown,
   Menu,
@@ -745,9 +744,17 @@ function ContactSection() {
           {/* Social Links */}
           <div className="flex items-center justify-center gap-4">
             {[
-              { icon: <Github className="w-5 h-5" />, href: '#', label: 'GitHub' },
-              { icon: <Linkedin className="w-5 h-5" />, href: 'www.linkedin.com/in/shafi-masthan-koushik-shaik-b79ba7356                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ', label: 'LinkedIn' },
-              { icon: <Twitter className="w-5 h-5" />, href: '#', label: 'Twitter' },
+              { icon: <Github className="w-5 h-5" />, href: 'https://github.com/KNKDark', label: 'GitHub' },
+              { icon: <Linkedin className="w-5 h-5" />, href: 'https://www.linkedin.com/in/shafi-masthan-koushik-shaik-b79ba7356', label: 'LinkedIn' },
+              {
+                icon: (
+                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor" aria-hidden="true">
+                    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.847h-7.406l-5.8-7.584-6.633 7.584H.48l8.6-9.83L0 1.154h7.594l5.243 6.932L18.9 1.153Zm-1.29 19.495h2.04L6.486 3.24H4.298L17.61 20.648Z" />
+                  </svg>
+                ),
+                href: 'https://x.com/shafi_2340',
+                label: 'X'
+              },
               { icon: <Mail className="w-5 h-5" />, href: 'https://mail.google.com/mail/?view=cm&fs=1&to=91-8142726417.830@zohomail.in', label: 'Email' },
             ].map((social) => (
               <motion.a
