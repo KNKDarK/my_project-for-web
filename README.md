@@ -1,4 +1,4 @@
-# 🚀Welcome to Sk.shafi masthan koushik 
+# 🚀Welcome to Sk.shafi masthan koushik web development project
 
 I’m SK. Shafi Masthan Koushik, a CSE student and developer focused on building fast, scalable, and user-centered web applications.  
 I specialize in modern JavaScript/TypeScript ecosystems, especially React and Next.js, with a strong focus on clean architecture and performance optimization.  
