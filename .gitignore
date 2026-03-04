@@ -49,3 +49,6 @@ prompt
 server.log
 # Skills directory
 /skills/
+
+# personal local-only folders
+/personal_local/

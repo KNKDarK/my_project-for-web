@@ -30,7 +30,6 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { toast } from 'sonner'
 
 // Navigation Component
 function Navbar() {
@@ -552,6 +551,7 @@ function BookingModal({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -562,12 +562,35 @@ function BookingModal({ children }: { children: React.ReactNode }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    
-    setIsSuccess(true)
-    setIsSubmitting(false)
+    setSubmitError(null)
+
+    try {
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          location: formData.address,
+          reason: formData.reason,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorResponse = await response.json().catch(() => null)
+        const message = errorResponse?.error ?? 'Failed to submit booking. Please try again.'
+        setSubmitError(message)
+        return
+      }
+
+      setIsSuccess(true)
+    } catch {
+      setSubmitError('Failed to submit booking. Please check your connection and try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleClose = () => {
@@ -575,6 +598,7 @@ function BookingModal({ children }: { children: React.ReactNode }) {
     // Reset state after animation
     setTimeout(() => {
       setIsSuccess(false)
+      setSubmitError(null)
       setFormData({ name: '', email: '', address: '', reason: '' })
     }, 200)
   }
@@ -681,6 +705,9 @@ function BookingModal({ children }: { children: React.ReactNode }) {
                   required
                 />
               </div>
+              {submitError && (
+                <p className="text-sm text-destructive">{submitError}</p>
+              )}
               <Button type="submit" className="w-full gap-2" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
