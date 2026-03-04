@@ -52,3 +52,7 @@ server.log
 
 # personal local-only folders
 /personal_local/
+
+# local prisma sqlite database
+/prisma/db/
+.env*.local
