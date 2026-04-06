@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { signIn, signOut, useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { 
   Code2, 
   Server, 
@@ -21,7 +23,11 @@ import {
   Rocket,
   MessageSquare,
   Send,
-  Loader2
+  Loader2,
+  Shield,
+  Lock,
+  LogOut,
+  UserRound
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -33,14 +39,52 @@ import { Badge } from '@/components/ui/badge'
 
 // Navigation Component
 function Navbar() {
+  const router = useRouter()
+  const { data: session, status, update } = useSession()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isLoginOpen, setIsLoginOpen] = useState(false)
+  const [loginError, setLoginError] = useState<string | null>(null)
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
+  const [credentials, setCredentials] = useState({ username: '', password: '' })
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault()
+    setIsLoggingIn(true)
+    setLoginError(null)
+
+    try {
+      const response = await signIn('credentials', {
+        redirect: false,
+        username: credentials.username,
+        password: credentials.password,
+      })
+
+      if (!response?.ok) {
+        setLoginError('Invalid username or password.')
+        return
+      }
+
+      await update()
+      setIsLoginOpen(false)
+      setCredentials({ username: '', password: '' })
+      router.refresh()
+    } finally {
+      setIsLoggingIn(false)
+    }
+  }
+
+  const handleLogout = async () => {
+    await signOut({ redirect: false })
+    await update()
+    router.refresh()
+  }
 
   const navLinks = [
     { href: '#work', label: 'Work' },
@@ -55,17 +99,22 @@ function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-background/80 backdrop-blur-lg border-b border-border/50 shadow-sm' : 'bg-transparent'
+        isScrolled
+          ? 'bg-background/75 backdrop-blur-2xl border-b border-border/60 shadow-[0_10px_40px_rgba(0,0,0,0.35)]'
+          : 'bg-transparent'
       }`}
     >
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
-          <motion.a 
+        <div className="flex items-center justify-between h-16 sm:h-20 gap-3">
+          <motion.a
             href="#"
-            className="text-lg sm:text-xl font-bold tracking-tight"
+            className="flex items-center gap-3 text-lg sm:text-xl font-bold tracking-tight"
             whileHover={{ scale: 1.02 }}
           >
-            <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-border/70 bg-background/80 shadow-lg shadow-black/20 overflow-hidden">
+              <img src="/icon.svg" alt="Logo" className="h-8 w-8" />
+            </span>
+            <span className="bg-gradient-to-r from-foreground via-foreground/90 to-foreground/60 bg-clip-text text-transparent">
               SK.Shafi Masthan Koushik
             </span>
           </motion.a>
@@ -76,23 +125,101 @@ function Navbar() {
               <motion.a
                 key={link.href}
                 href={link.href}
-                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-accent"
+                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-accent/80"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
                 {link.label}
               </motion.a>
             ))}
+            {status === 'authenticated' && (
+              <motion.a
+                href="/admin/bookings"
+                className="ml-2 inline-flex items-center gap-2 rounded-lg border border-border/70 bg-primary/10 px-4 py-2 text-sm font-medium text-foreground hover:bg-primary/15 transition-colors"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Shield className="h-4 w-4" />
+                Admin
+              </motion.a>
+            )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 rounded-lg hover:bg-accent transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          <div className="flex items-center gap-2 sm:gap-3">
+            {status === 'authenticated' ? (
+              <>
+                <div className="hidden sm:flex items-center gap-2 rounded-full border border-border/70 bg-background/80 px-3 py-1.5 text-xs text-muted-foreground">
+                  <UserRound className="h-3.5 w-3.5" />
+                  {session?.user?.name ?? 'shafi'}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="hidden sm:inline-flex gap-2"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
+                <DialogTrigger asChild>
+                  <Button size="sm" className="hidden sm:inline-flex gap-2">
+                    <Lock className="h-4 w-4" />
+                    Login
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[420px] bg-background/95 backdrop-blur-xl border-border/70">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl">Login</DialogTitle>
+                    <DialogDescription>
+                      Use username shafi and password 1234.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form className="space-y-4 mt-4" onSubmit={handleLogin}>
+                    <div className="space-y-2">
+                      <Label htmlFor="username">Username</Label>
+                      <Input
+                        id="username"
+                        value={credentials.username}
+                        onChange={(event) => setCredentials((prev) => ({ ...prev, username: event.target.value }))}
+                        placeholder="shafi"
+                        autoComplete="username"
+                        className="bg-background/80"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="password">Password</Label>
+                      <Input
+                        id="password"
+                        type="password"
+                        value={credentials.password}
+                        onChange={(event) => setCredentials((prev) => ({ ...prev, password: event.target.value }))}
+                        placeholder="1234"
+                        autoComplete="current-password"
+                        className="bg-background/80"
+                      />
+                    </div>
+                    {loginError && <p className="text-sm text-destructive">{loginError}</p>}
+                    <Button type="submit" className="w-full gap-2" disabled={isLoggingIn}>
+                      <Lock className="h-4 w-4" />
+                      {isLoggingIn ? 'Signing in...' : 'Sign in'}
+                    </Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            )}
+
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden p-2 rounded-lg border border-border/60 bg-background/70 hover:bg-accent/80 transition-colors"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
@@ -109,12 +236,46 @@ function Navbar() {
                   <a
                     key={link.href}
                     href={link.href}
-                    className="block px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors"
+                    className="block px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/80 rounded-lg transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {link.label}
                   </a>
                 ))}
+                <div className="pt-2 border-t border-border/60 mt-2 space-y-2">
+                  {status === 'authenticated' ? (
+                    <>
+                      <a
+                        href="/admin/bookings"
+                        className="block px-4 py-3 text-sm font-medium rounded-lg border border-border/60 bg-primary/10 text-foreground"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Admin
+                      </a>
+                      <button
+                        type="button"
+                        className="w-full px-4 py-3 text-sm font-medium text-left rounded-lg hover:bg-accent/80 transition-colors"
+                        onClick={() => {
+                          handleLogout()
+                          setIsMobileMenuOpen(false)
+                        }}
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      className="w-full px-4 py-3 text-sm font-medium text-left rounded-lg hover:bg-accent/80 transition-colors"
+                      onClick={() => {
+                        setIsLoginOpen(true)
+                        setIsMobileMenuOpen(false)
+                      }}
+                    >
+                      Login
+                    </button>
+                  )}
+                </div>
               </div>
             </motion.div>
           )}
@@ -129,12 +290,12 @@ function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/30" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.07),transparent_28%),linear-gradient(135deg,rgba(7,7,10,1)_0%,rgba(12,12,16,1)_45%,rgba(18,18,24,1)_100%)]" />
       
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl"
+          className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl"
           animate={{ 
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3]
@@ -142,7 +303,7 @@ function HeroSection() {
           transition={{ duration: 8, repeat: Infinity }}
         />
         <motion.div
-          className="absolute -bottom-40 -left-40 w-80 h-80 bg-accent/10 rounded-full blur-3xl"
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl"
           animate={{ 
             scale: [1.2, 1, 1.2],
             opacity: [0.5, 0.3, 0.5]
@@ -158,7 +319,7 @@ function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <Badge variant="secondary" className="mb-6 px-4 py-1.5 text-sm font-medium">
+            <Badge variant="secondary" className="mb-6 px-4 py-1.5 text-sm font-medium bg-white/10 text-white border-white/10">
               <Sparkles className="w-3.5 h-3.5 mr-2" />
               CSE Student & Developer
             </Badge>
@@ -168,10 +329,10 @@ function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-white"
           >
             <span className="block">Developer &</span>
-            <span className="block mt-2 bg-gradient-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
+            <span className="block mt-2 bg-gradient-to-r from-white via-white/85 to-white/60 bg-clip-text text-transparent">
               Tech Enthusiast
             </span>
           </motion.h1>
@@ -180,7 +341,7 @@ function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
+            className="text-lg sm:text-xl text-white/70 max-w-2xl mx-auto mb-10"
           >
             I develop efficient, scalable software solutions and optimize performance for modern applications. 
             Passionate about creating impactful technology.
@@ -198,7 +359,7 @@ function HeroSection() {
                 Book a Call
               </Button>
             </BookingModal>
-            <Button size="lg" variant="outline" className="gap-2 min-w-[160px]" asChild>
+            <Button size="lg" variant="outline" className="gap-2 min-w-[160px] border-white/15 bg-white/5 text-white hover:bg-white/10 hover:text-white" asChild>
               <a href="#work">
                 View Work
                 <ExternalLink className="w-4 h-4" />
@@ -218,7 +379,7 @@ function HeroSection() {
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           >
-            <ChevronDown className="w-6 h-6 text-muted-foreground" />
+            <ChevronDown className="w-6 h-6 text-white/50" />
           </motion.div>
         </motion.div>
       </div>
@@ -611,7 +772,7 @@ function BookingModal({ children }: { children: React.ReactNode }) {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] bg-background/95 backdrop-blur-xl border-border/70">
         {isSuccess ? (
           <div className="py-8 text-center">
             <motion.div
@@ -621,7 +782,7 @@ function BookingModal({ children }: { children: React.ReactNode }) {
               className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center"
             >
               <motion.svg
-                initial={{ pathLength: 0 }}
+              <DialogTitle className="text-2xl mb-2">Booking Confirmed!</DialogTitle>
                 animate={{ pathLength: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="w-10 h-10 text-green-600 dark:text-green-400"
@@ -732,7 +893,7 @@ function BookingModal({ children }: { children: React.ReactNode }) {
 // Contact Section
 function ContactSection() {
   return (
-    <section id="contact" className="py-24 sm:py-32 bg-muted/30">
+    <section id="contact" className="py-24 sm:py-32 bg-white/[0.03]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

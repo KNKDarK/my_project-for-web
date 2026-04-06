@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { AppSessionProvider } from "@/components/providers/session-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,10 +46,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
-        {children}
-        <SpeedInsights />
-        <Toaster />
-        <Analytics />
+        <AppSessionProvider>
+          {children}
+          <SpeedInsights />
+          <Toaster />
+          <Analytics />
+        </AppSessionProvider>
       </body>
     </html>
   );

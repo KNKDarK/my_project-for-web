@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth/next'
 import { z } from 'zod'
 
+import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 
 const updateBookingSchema = z
@@ -18,6 +20,12 @@ type RouteContext = {
 
 export async function GET(_request: Request, { params }: RouteContext) {
   try {
+    const session = await getServerSession(authOptions)
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const { id } = await params
 
     const booking = await db.booking.findUnique({
@@ -37,6 +45,12 @@ export async function GET(_request: Request, { params }: RouteContext) {
 
 export async function PATCH(request: Request, { params }: RouteContext) {
   try {
+    const session = await getServerSession(authOptions)
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const { id } = await params
     const body = await request.json()
     const parsed = updateBookingSchema.safeParse(body)
@@ -77,6 +91,12 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 
 export async function DELETE(_request: Request, { params }: RouteContext) {
   try {
+    const session = await getServerSession(authOptions)
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const { id } = await params
 
     const existing = await db.booking.findUnique({
