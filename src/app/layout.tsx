@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   keywords: ["Developer", "CSE Student", "Web Development", "React", "Next.js", "TypeScript", "Full Stack", "Software Engineer"],
   authors: [{ name: "SK.Shafi Masthan Koushik" }],
   icons: {
-    icon: "/logo.svg",
+    icon: "/icon.svg",
   },
   openGraph: {
     title: "SK.Shafi Masthan Koushik | Developer Portfolio",
