@@ -782,7 +782,6 @@ function BookingModal({ children }: { children: React.ReactNode }) {
               className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center"
             >
               <motion.svg
-              <DialogTitle className="text-2xl mb-2">Booking Confirmed!</DialogTitle>
                 animate={{ pathLength: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="w-10 h-10 text-green-600 dark:text-green-400"
