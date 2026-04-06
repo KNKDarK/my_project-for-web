@@ -174,7 +174,7 @@ function Navbar() {
                   <DialogHeader>
                     <DialogTitle className="text-2xl">Login</DialogTitle>
                     <DialogDescription>
-                      Use username shafi and password 1234.
+                      Enter your site credentials to continue.
                     </DialogDescription>
                   </DialogHeader>
                   <form className="space-y-4 mt-4" onSubmit={handleLogin}>
@@ -184,7 +184,7 @@ function Navbar() {
                         id="username"
                         value={credentials.username}
                         onChange={(event) => setCredentials((prev) => ({ ...prev, username: event.target.value }))}
-                        placeholder="shafi"
+                        placeholder="Username"
                         autoComplete="username"
                         className="bg-background/80"
                       />
@@ -196,7 +196,7 @@ function Navbar() {
                         type="password"
                         value={credentials.password}
                         onChange={(event) => setCredentials((prev) => ({ ...prev, password: event.target.value }))}
-                        placeholder="1234"
+                        placeholder="Password"
                         autoComplete="current-password"
                         className="bg-background/80"
                       />
