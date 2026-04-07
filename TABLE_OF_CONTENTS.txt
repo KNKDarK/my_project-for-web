@@ -1,0 +1,274 @@
+================================================================================
+                        TABLE OF CONTENTS
+             Web App Documentation - File Reference Guide
+================================================================================
+
+SECTION 1: ROOT CONFIGURATION FILES
+└─ Location: comment.txt, Line 1-35
+│
+├─ Caddyfile ............................ Line 3
+│  Server configuration for HTTPS and request forwarding
+│
+├─ CNAME ................................ Line 6
+│  DNS domain configuration for deployed web app
+│
+├─ package.json ......................... Line 9
+│  Project metadata, dependencies (Next.js, React, Prisma, Tailwind), scripts
+│
+├─ pnpm-lock.yaml ....................... Line 12
+│  Lock file ensuring consistent dependency versions
+│
+├─ pnpm-workspace.yaml .................. Line 15
+│  Monorepo workspace configuration
+│
+├─ next.config.ts ....................... Line 18
+│  Next.js standalone output mode, build settings
+│
+├─ tsconfig.json ........................ Line 21
+│  TypeScript compiler options and path aliases
+│
+├─ postcss.config.mjs ................... Line 24
+│  PostCSS with Tailwind CSS and Autoprefixer
+│
+├─ tailwind.config.ts ................... Line 27
+│  Tailwind theme, colors, spacing configuration
+│
+├─ eslint.config.mjs .................... Line 30
+│  Code quality and best practices enforcement
+│
+├─ middleware.ts ........................ Line 33
+│  Authentication redirects and protected routes
+│
+├─ next-env.d.ts ........................ Line 36
+│  Auto-generated TypeScript declarations
+│
+├─ README.md ............................ Line 39
+│  Project documentation and setup instructions
+│
+└─ components.json ....................... Line 42
+   shadcn UI configuration for component scaffolding
+
+================================================================================
+
+SECTION 2: DATABASE & MIGRATIONS
+└─ Location: comment.txt, Line 36-45
+│
+├─ prisma/schema.prisma ................. Line 38
+│  Data models (User, Post, Booking) with constraints for PostgreSQL
+│
+├─ prisma/migrations/.../migration.sql . Line 41
+│  Initial database schema SQL file
+│
+└─ db/ ................................... Line 44
+   Database utilities and helper functions
+
+================================================================================
+
+SECTION 3: SOURCE CODE - APP STRUCTURE
+└─ Location: comment.txt, Line 46-58
+│
+├─ src/app/layout.tsx ................... Line 48
+│  Root layout with metadata, fonts, providers, global styles, Toaster
+│
+├─ src/app/page.tsx ..................... Line 51
+│  Homepage with portfolio, animations, contact form, authentication UI
+│
+├─ src/app/globals.css .................. Line 54
+│  Global CSS, Tailwind utilities, animations, responsive design
+│
+├─ src/app/admin/bookings/page.tsx ...... Line 57
+│  Admin booking management page with CRUD and filtering
+│
+├─ src/app/api/route.ts ................. Line 60
+│  Main API route handler
+│
+└─ src/app/api/auth/[...nextauth]/route.ts . Line 63
+   NextAuth endpoints (login, logout, callback)
+
+================================================================================
+
+SECTION 4: COMPONENTS - UI & PROVIDERS
+└─ Location: comment.txt, Line 59-263
+│
+├─ src/components/providers/session-provider.tsx .. Line 61
+│  NextAuth SessionProvider wrapper for global session access
+│
+└─ src/components/ui/ [50+ Components] ............ Line 64-263
+   │
+   ├─ Layout & Container Components:
+   │  ├─ card.tsx .......................... Line 70
+   │  ├─ separator.tsx ..................... Line 147
+   │  ├─ sheet.tsx ......................... Line 155
+   │  └─ sidebar.tsx ....................... Line 158
+   │
+   ├─ Interactive Components:
+   │  ├─ button.tsx ........................ Line 91
+   │  ├─ dropdown-menu.tsx ................. Line 130
+   │  ├─ radio-group.tsx ................... Line 214
+   │  ├─ checkbox.tsx ...................... Line 112
+   │  ├─ switch.tsx ........................ Line 235
+   │  ├─ toggle.tsx ........................ Line 244
+   │  └─ toggle-group.tsx .................. Line 247
+   │
+   ├─ Form Components:
+   │  ├─ input.tsx ......................... Line 136
+   │  ├─ textarea.tsx ....................... Line 238
+   │  ├─ label.tsx .......................... Line 139
+   │  ├─ form.tsx ........................... Line 127
+   │  └─ input-otp.tsx ...................... Line 133
+   │
+   ├─ Data Display Components:
+   │  ├─ table.tsx .......................... Line 238
+   │  ├─ badge.tsx .......................... Line 85
+   │  ├─ pagination.tsx ..................... Line 208
+   │  ├─ skeleton.tsx ....................... Line 216
+   │  └─ progress.tsx ....................... Line 211
+   │
+   ├─ Dialog & Modal Components:
+   │  ├─ dialog.tsx ......................... Line 124
+   │  ├─ alert-dialog.tsx .................. Line 79
+   │  └─ drawer.tsx ......................... Line 127
+   │
+   ├─ Navigation Components:
+   │  ├─ breadcrumb.tsx ..................... Line 88
+   │  ├─ menubar.tsx ........................ Line 142
+   │  ├─ navigation-menu.tsx ................ Line 145
+   │  └─ pagination.tsx ..................... Line 208
+   │
+   ├─ Utility & Display Components:
+   │  ├─ tooltip.tsx ........................ Line 250
+   │  ├─ hover-card.tsx ..................... Line 130
+   │  ├─ popover.tsx ........................ Line 205
+   │  ├─ scroll-area.tsx .................... Line 219
+   │  ├─ resizable.tsx ....................... Line 217
+   │  ├─ carousel.tsx ........................ Line 94
+   │  ├─ command.tsx ......................... Line 115
+   │  ├─ context-menu.tsx ................... Line 118
+   │  ├─ collapsible.tsx ..................... Line 112
+   │  ├─ accordion.tsx ....................... Line 73
+   │  ├─ aspect-ratio.tsx .................... Line 76
+   │  ├─ avatar.tsx .......................... Line 82
+   │  ├─ select.tsx .......................... Line 222
+   │  ├─ slider.tsx .......................... Line 225
+   │  └─ tabs.tsx ............................ Line 241
+   │
+   └─ Notification Components:
+      ├─ toast.tsx ......................... Line 243
+      ├─ toaster.tsx ....................... Line 246
+      ├─ alert.tsx ......................... Line 73
+      └─ sonner.tsx ........................ Line 232
+
+================================================================================
+
+SECTION 5: UTILITIES & HOOKS
+└─ Location: comment.txt, Line 264-274
+│
+├─ src/hooks/use-mobile.ts .............. Line 266
+│  Custom hook detecting mobile screen sizes for responsive rendering
+│
+├─ src/hooks/use-toast.ts ............... Line 269
+│  Custom hook providing programmatic toast notification API
+│
+├─ src/lib/auth.ts ...................... Line 272
+│  NextAuth configuration with credentials provider (shafi/1234)
+│
+├─ src/lib/db.ts ........................ Line 275
+│  Prisma singleton instance with logging enabled
+│
+└─ src/lib/utils.ts ..................... Line 278
+   Utility functions for class name merging (cn/clsx)
+
+================================================================================
+
+SECTION 6: PUBLIC ASSETS
+└─ Location: comment.txt, Line 275-280
+│
+├─ public/robots.txt .................... Line 277
+│  SEO configuration for search engine crawling
+│
+└─ public/ [Static Files] ............... Line 280
+   Images, icons, favicons, and other served assets
+
+================================================================================
+
+SECTION 7: DEPENDENCIES & EXTERNAL LIBRARIES
+└─ Location: comment.txt, Line 281-295
+│
+├─ @dnd-kit/core, @dnd-kit/sortable ... Line 283
+│  Drag-and-drop functionality for booking management
+│
+├─ @hookform/resolvers, react-hook-form Line 286
+│  Form validation and error handling
+│
+├─ @mdxeditor/editor .................... Line 289
+│  Rich text/markdown editing component
+│
+├─ @prisma/client ....................... Line 292
+│  Type-safe database ORM and query builder
+│
+├─ next-auth ............................ Line 295
+│  Session management and JWT authentication
+│
+├─ framer-motion ........................ Line 298
+│  Animation library for transitions and visual effects
+│
+├─ lucide-react ......................... Line 301
+│  SVG icon library (Mail, Github, Shield, Lock, etc.)
+│
+└─ class-variance-authority ............. Line 304
+   Component variant generation and styling
+
+================================================================================
+
+SECTION 8: HOW FILES AFFECT THE WEB APP
+└─ Location: comment.txt, Line 296-310
+│
+├─ Architecture Foundation
+│  Config files establish build, type-checking, and styling foundation
+│
+├─ Data Persistence
+│  Prisma schema + migrations enable PostgreSQL database operations
+│
+├─ Authentication & Security
+│  NextAuth (auth.ts + middleware) protects admin routes with credentials
+│
+├─ UI Structure & Styling
+│  Layout.tsx and globals.css provide global page structure and responsive design
+│
+├─ Homepage Implementation
+│  Page.tsx implements interactive portfolio with animations and contact forms
+│
+├─ Admin Dashboard
+│  Admin bookings page enables management of booking data with CRUD and filtering
+│
+├─ Design System
+│  50+ UI components provide consistent accessible component library
+│
+├─ Interactivity & Responsiveness
+│  Custom hooks (use-mobile, use-toast) enable responsive behavior and notifications
+│
+└─ Data Operations
+   Database client connects to PostgreSQL for CRUD operations across all pages
+
+================================================================================
+
+QUICK REFERENCE BY USE CASE
+================================================================================
+
+WANT TO... | SEE SECTION(S)
+-----------|----------------------------------------------------------
+Set up dev environment | Section 1 (package.json, pnpm-lock.yaml, tsconfig)
+Modify database schema | Section 2 (prisma/schema.prisma)
+Change homepage layout | Section 3 (src/app/page.tsx, layout.tsx)
+Update admin page | Section 3 (src/app/admin/bookings/page.tsx)
+Add new UI component | Section 4 (src/components/ui/)
+Create custom hook | Section 5 (src/hooks/)
+Configure authentication | Section 5 (src/lib/auth.ts)
+Change styling/theme | Section 1 (tailwind.config.ts) + Section 3 (globals.css)
+Manage form validation | Section 5 (src/lib/utils.ts) + Section 7 (react-hook-form)
+Handle API requests | Section 3 (src/app/api/)
+Connect to database | Section 5 (src/lib/db.ts) + Section 2 (Prisma)
+
+================================================================================
+                    END OF TABLE OF CONTENTS
+================================================================================
